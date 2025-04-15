@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            text-align: justify;
+            margin: 60px;
+            position: relative;
+        }
+    
+        /* Marca d'água centralizada e suave */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            transform: translate(-50%, -50%);
+            background-image: url("file:///{{ logo_path | replace('\\', '/') }}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.05;  /* quanto menor, mais suave */
+            z-index: -1;
+            pointer-events: none;
+        }
+    
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            margin-bottom: 40px;
+        }
+    
+        .assinatura {
+            margin-top: 80px;
+            text-align: center;
+        }
+    
+        .assinatura p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="marca">
+        <img src="file:///C:/logo.png" alt="Marca d'água">
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Formulário Cliente</h2>
+
+    <form action="/gerar" method="POST" onsubmit="return validarFormulario()">
+        <fieldset>
+            <legend>Dados do Responsável</legend>
+            <label>Nome:<input type="text" name="nome" required></label>
+            <label>CPF/CNPJ:<input type="text" name="cpf_cnpj" id="cpf_cnpj" required></label>
+        </fieldset>
+        <fieldset>
+            <legend>Unidade Consumidora</legend>
+            <label>Código da UC:<input type="text" name="codigo_uc" required></label>
+        </fieldset>
+        <fieldset>
+            <legend>Endereço da Instalação</legend>
+            <label>CEP:<input type="text" id="cep" name="cep" onblur="buscarEndereco()" required></label>
+            <label>Número:<input type="text" name="numero" required></label>
+            <label>Endereço:<input type="text" id="endereco" name="endereco" readonly required></label>
+            <label>Cidade:<input type="text" id="cidade" name="cidade" readonly required></label>
+        </fieldset>
+
+
+
+        <fieldset>
+            <legend>Módulos Fotovoltaicos</legend>
+        
+            <label>Selecionar módulo existente:
+                <select name="modulo_escolhido">
+                    {% for m in modulos %}
+                        <option value="{{ m.fabricante }}|{{ m.modelo }}|{{ m.potencia }}">
+                            {{ m.fabricante }} - {{ m.modelo }} ({{ m.potencia }}W)
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+        
+            <p><strong>OU</strong> adicionar novo módulo:</p>
+        
+            <label>Fabricante:<input type="text" name="mod_novo_fabricante"></label>
+            <label>Modelo:<input type="text" name="mod_novo_modelo"></label>
+            <label>Potência (W):<input type="number" name="mod_novo_potencia" step="any"></label>
+            <label>Quantidade:<input type="number" name="mod_quantidade" required></label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Inversores</legend>
+        
+            <label>Selecionar inversor existente:
+                <select name="inversor_escolhido">
+                    {% for i in inversores %}
+                        <option value="{{ i.fabricante }}|{{ i.modelo }}|{{ i.potencia }}">
+                            {{ i.fabricante }} - {{ i.modelo }} ({{ i.potencia }}W)
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+        
+            <p><strong>OU</strong> adicionar novo inversor:</p>
+        
+            <label>Fabricante:<input type="text" name="inv_novo_fabricante"></label>
+            <label>Modelo:<input type="text" name="inv_novo_modelo"></label>
+            <label>Potência (W):<input type="number" name="inv_novo_potencia" step="any"></label>
+            <label>Quantidade:<input type="number" name="inv_quantidade" required></label>
+        </fieldset>
+        
+        <button type="submit">Gerar Documentos CPFL (ZIP)</button>
+    </form>
+
+    <!-- Scripts externos -->
+    <script src="{{ url_for('static', filename='js/viacep.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/validarCpfCnpj.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mascararCpfCnpj.js') }}"></script>
+</body>
+</html>
