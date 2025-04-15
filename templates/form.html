@@ -5,6 +5,7 @@
     <title>Formulário</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
 <body>
     <h2>Formulário Cliente</h2>
@@ -14,24 +15,59 @@
             <legend>Dados do Responsável</legend>
             <label>Nome:<input type="text" name="nome" required></label>
             <label>CPF/CNPJ:<input type="text" name="cpf_cnpj" id="cpf_cnpj" required></label>
+            <label>Telefone:<input type="text" name="telefone" required></label>
+            <label>E-Mail:<input type="text" name="email" required></label>
         </fieldset>
+
         <fieldset>
             <legend>Unidade Consumidora</legend>
             <label>Código da UC:<input type="text" name="codigo_uc" required></label>
+            <fieldset>
+                <legend>Padrão de Entrada CPFL</legend>
+            
+                <label>Selecione o padrão:
+                    <select name="padrao_cpfl" required>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
+                        <option value="C3">C3</option>
+                        <option value="C4">C4</option>
+                        <option value="C5">C5</option>
+                    </select>
+                </label>
+            
+                <label>Forma de conexão:
+                    <select name="forma_conexao" required>
+                        <option value="Aérea">Aérea</option>
+                        <option value="Subterrânea">Subterrânea</option>
+                    </select>
+                </label>
+            </fieldset>
         </fieldset>
+
         <fieldset>
             <legend>Endereço da Instalação</legend>
             <label>CEP:<input type="text" id="cep" name="cep" onblur="buscarEndereco()" required></label>
-            <label>Número:<input type="text" name="numero" required></label>
+            <input type="text" name="numero" onblur="atualizarLocalizacaoComNumero()" required>
             <label>Endereço:<input type="text" id="endereco" name="endereco" readonly required></label>
             <label>Cidade:<input type="text" id="cidade" name="cidade" readonly required></label>
         </fieldset>
 
-
+        <fieldset>
+            <legend>Coordenadas e Localização</legend>
+            <div id="mapa" style="height: 300px; margin-bottom: 10px;"></div>
+        
+            <label>Latitude:
+                <input type="text" name="latitude" id="latitude" onblur="moverMarcadorManual()">
+            </label>
+            <label>Longitude:
+                <input type="text" name="longitude" id="longitude" onblur="moverMarcadorManual()">
+            </label>
+        </fieldset>
 
         <fieldset>
             <legend>Módulos Fotovoltaicos</legend>
-        
             <label>Selecionar módulo existente:
                 <select name="modulo_escolhido">
                     {% for m in modulos %}
@@ -41,18 +77,15 @@
                     {% endfor %}
                 </select>
             </label>
-        
             <p><strong>OU</strong> adicionar novo módulo:</p>
-        
             <label>Fabricante:<input type="text" name="mod_novo_fabricante"></label>
             <label>Modelo:<input type="text" name="mod_novo_modelo"></label>
-            <label>Potência (W):<input type="number" name="mod_novo_potencia" step="any"></label>
+            <label>Potência (W):<input type="text" name="mod_novo_potencia" step="any"></label>
             <label>Quantidade:<input type="number" name="mod_quantidade" required></label>
         </fieldset>
 
         <fieldset>
             <legend>Inversores</legend>
-        
             <label>Selecionar inversor existente:
                 <select name="inversor_escolhido">
                     {% for i in inversores %}
@@ -62,21 +95,22 @@
                     {% endfor %}
                 </select>
             </label>
-        
             <p><strong>OU</strong> adicionar novo inversor:</p>
-        
             <label>Fabricante:<input type="text" name="inv_novo_fabricante"></label>
             <label>Modelo:<input type="text" name="inv_novo_modelo"></label>
-            <label>Potência (W):<input type="number" name="inv_novo_potencia" step="any"></label>
+            <label>Potência (W):<input type="text" name="inv_novo_potencia" step="any"></label>
             <label>Quantidade:<input type="number" name="inv_quantidade" required></label>
         </fieldset>
-        
+        <label>Data Entrada de Operação:<input type="text" name="data_operacao" required></label>
+
         <button type="submit">Gerar Documentos CPFL (ZIP)</button>
     </form>
 
-    <!-- Scripts externos -->
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="{{ url_for('static', filename='js/viacep.js') }}"></script>
     <script src="{{ url_for('static', filename='js/validarCpfCnpj.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mascararCpfCnpj.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mapa_localizacao.js') }}"></script>
 </body>
 </html>

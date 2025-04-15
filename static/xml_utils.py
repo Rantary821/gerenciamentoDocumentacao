@@ -16,30 +16,34 @@ def adicionar_modulo(fabricante, modelo, potencia):
     tree, root = carregar_xml()
     modulos = root.find('modulos')
 
+    potencia_str = str(potencia).strip()
+
     for m in modulos.findall('modulo'):
         if (m.findtext('fabricante') == fabricante and
             m.findtext('modelo') == modelo and
-            m.findtext('potencia') == potencia):
+            m.findtext('potencia') == potencia_str):
             return  # Já existe
 
     novo = ET.SubElement(modulos, 'modulo')
     ET.SubElement(novo, 'fabricante').text = fabricante
     ET.SubElement(novo, 'modelo').text = modelo
-    ET.SubElement(novo, 'potencia').text = potencia
+    ET.SubElement(novo, 'potencia').text = potencia_str
     tree.write(XML_PATH, encoding='utf-8', xml_declaration=True)
 
 def adicionar_inversor(fabricante, modelo, potencia):
     tree, root = carregar_xml()
     inversores = root.find('inversores')
 
+    potencia_str = str(potencia).strip()
+
     for i in inversores.findall('inversor'):
         if (i.findtext('fabricante') == fabricante and
             i.findtext('modelo') == modelo and
-            i.findtext('potencia') == potencia):
+            i.findtext('potencia') == potencia_str):
             return  # Já existe
 
     novo = ET.SubElement(inversores, 'inversor')
     ET.SubElement(novo, 'fabricante').text = fabricante
     ET.SubElement(novo, 'modelo').text = modelo
-    ET.SubElement(novo, 'potencia').text = potencia
+    ET.SubElement(novo, 'potencia').text = potencia_str
     tree.write(XML_PATH, encoding='utf-8', xml_declaration=True)

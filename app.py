@@ -10,6 +10,7 @@ import io
 import shutil
 import subprocess
 from static.xml_utils import adicionar_modulo, adicionar_inversor
+from static.utils_excel import preencher_anexo_f
 
 app = Flask(__name__)
 
@@ -49,16 +50,46 @@ def formulario():
 def gerar_tudo_zip():
     nome = request.form['nome']
     cpf = request.form['cpf_cnpj']
+    telefone = request.form['telefone']
+    email = request.form['email']
     cep = request.form['cep'].replace("-", "").strip()
     numero = request.form['numero']
     endereco = request.form['endereco']
     cidade_form = request.form['cidade']
     uc = request.form['codigo_uc']
-    mod_fabricante, mod_modelo, pot_modulo = request.form['modulo_escolhido'].split('|')
-    inv_fabricante, inv_modelo, pot_inversor = request.form['inversor_escolhido'].split('|')
+    latitude = request.form.get('latitude', '')
+    longitude = request.form.get('longitude', '')
+    data_operacao = request.form.get('data_operacao', '')
+    padrao = request.form.get('padrao_cpfl', '')
+    forma_conexao = request.form.get('forma_conexao', '')
     qtd_modulos = int(request.form['mod_quantidade'])
     qtd_inversores = int(request.form['inv_quantidade'])
-    pot_modulo, pot_inversor = float(pot_modulo), float(pot_inversor)
+
+    mod_novo_fabricante = request.form.get('mod_novo_fabricante', '').strip()
+    mod_novo_modelo = request.form.get('mod_novo_modelo', '').strip()
+    mod_novo_potencia = request.form.get('mod_novo_potencia', '').strip()
+
+    if mod_novo_fabricante and mod_novo_modelo and mod_novo_potencia:
+        mod_fabricante = mod_novo_fabricante
+        mod_modelo = mod_novo_modelo
+        pot_modulo = float(mod_novo_potencia)
+        adicionar_modulo(mod_fabricante, mod_modelo, str(pot_modulo))
+    else:
+        mod_fabricante, mod_modelo, pot_modulo = request.form['modulo_escolhido'].split('|')
+        pot_modulo = float(pot_modulo)
+
+    inv_novo_fabricante = request.form.get('inv_novo_fabricante', '').strip()
+    inv_novo_modelo = request.form.get('inv_novo_modelo', '').strip()
+    inv_novo_potencia = request.form.get('inv_novo_potencia', '').strip()
+
+    if inv_novo_fabricante and inv_novo_modelo and inv_novo_potencia:
+        inv_fabricante = inv_novo_fabricante
+        inv_modelo = inv_novo_modelo
+        pot_inversor = float(inv_novo_potencia)
+        adicionar_inversor(inv_fabricante, inv_modelo, str(pot_inversor))
+    else:
+        inv_fabricante, inv_modelo, pot_inversor = request.form['inversor_escolhido'].split('|')
+        pot_inversor = float(pot_inversor)
 
     try:
         via_cep = requests.get(f'https://viacep.com.br/ws/{cep}/json/').json()
@@ -73,20 +104,7 @@ def gerar_tudo_zip():
     potencia_modulos = round((qtd_modulos * pot_modulo) / 1000, 2)
     potencia_inversores = round((qtd_inversores * pot_inversor) / 1000, 2)
     potencia_utilizada = min(potencia_modulos, potencia_inversores)
-# Se o usuário preencher um novo módulo, ele sobrescreve o selecionado
-    if request.form['mod_novo_fabricante'] and request.form['mod_novo_modelo'] and request.form['mod_novo_potencia']:
-        mod_fabricante = request.form['mod_novo_fabricante'].strip()
-        mod_modelo = request.form['mod_novo_modelo'].strip()
-        pot_modulo = request.form['mod_novo_potencia'].strip()
-    adicionar_modulo(mod_fabricante, mod_modelo, pot_modulo)
 
-# Mesmo para o inversor
-    if request.form['inv_novo_fabricante'] and request.form['inv_novo_modelo'] and request.form['inv_novo_potencia']:
-        inv_fabricante = request.form['inv_novo_fabricante'].strip()
-        inv_modelo = request.form['inv_novo_modelo'].strip()
-        pot_inversor = request.form['inv_novo_potencia'].strip()
-        adicionar_inversor(inv_fabricante, inv_modelo, pot_inversor)
-    
     try:
         tree = ET.parse('responsavel.xml')
         root = tree.getroot()
@@ -94,7 +112,9 @@ def gerar_tudo_zip():
         responsavel_email = root.findtext('email', 'email@dominio.com')
         responsavel_telefone = root.findtext('telefone', '(00) 00000-0000')
     except:
-        responsavel_nome, responsavel_email, responsavel_telefone = "NOME TÉCNICO", "email@dominio.com", "(00) 00000-0000"
+        responsavel_nome = "NOME TÉCNICO"
+        responsavel_email = "email@dominio.com"
+        responsavel_telefone = "(00) 00000-0000"
 
     html_proc = render_template("modelo_procuracao.html",
         nome=nome, cpf=cpf, endereco=endereco, endereco_uc=endereco_uc,
@@ -104,36 +124,29 @@ def gerar_tudo_zip():
     proc_path = "gerados/procuracao.pdf"
     pdfkit.from_string(html_proc, proc_path, configuration=config, options={'enable-local-file-access': None, 'quiet': ''})
 
+    # === GERA ANEXO E.1 ===
     template_odt = "modelos/anexo_e1_template.odt"
     temp_dir = "temp_anexo"
     os.makedirs(temp_dir, exist_ok=True)
     with zipfile.ZipFile(template_odt, 'r') as zin:
         zin.extractall(temp_dir)
-
     content_path = os.path.join(temp_dir, "content.xml")
     with open(content_path, 'r', encoding='utf-8') as f:
         content = f.read()
-        print("--- DEBUG INÍCIO ---")
-        print("#UC encontrado?", "#UC" in content)
-        print("#KW encontrado?", "#KW" in content)
-        print("--- PRIMEIROS 500 CARACTERES ---")
-        print(content[:500])
-        print("--- DEBUG FIM ---")
-
-    content = content.replace("#UC", uc)
-    content = content.replace("#KW", str(potencia_utilizada))
-    content = content.replace("#FABINV", inv_fabricante)
-    content = content.replace("#MODINV", inv_modelo)
-    content = content.replace("#QNTINV", str(qtd_inversores))
-    content = content.replace("#POTTOTAL", f"{potencia_inversores} kW")
-    content = content.replace("#NOMETEC", responsavel_nome)
-    content = content.replace("#CONTATOTEC", f"{responsavel_telefone} / {responsavel_email}")
-    content = content.replace("#LOCAL", f"{cidade}-{uf}")
-    content = content.replace("#DATA", data_formatada)
-
+    content = (content
+        .replace("#UC", uc)
+        .replace("#KW", str(potencia_utilizada))
+        .replace("#FABINV", inv_fabricante)
+        .replace("#MODINV", inv_modelo)
+        .replace("#QNTINV", str(qtd_inversores))
+        .replace("#POTTOTAL", f"{potencia_inversores} kW")
+        .replace("#NOMETEC", responsavel_nome)
+        .replace("#CONTATOTEC", f"{responsavel_telefone} / {responsavel_email}")
+        .replace("#LOCAL", f"{cidade}-{uf}")
+        .replace("#DATA", data_formatada)
+    )
     with open(content_path, 'w', encoding='utf-8') as f:
         f.write(content)
-
     docx_out = "gerados/anexo_e1_editado.docx"
     with zipfile.ZipFile(docx_out, 'w') as zout:
         for root_dir, _, files in os.walk(temp_dir):
@@ -141,18 +154,49 @@ def gerar_tudo_zip():
                 full_path = os.path.join(root_dir, file)
                 arcname = os.path.relpath(full_path, temp_dir)
                 zout.write(full_path, arcname)
-
     shutil.rmtree(temp_dir)
-    pdf_out = "gerados/anexo_e1_editado.pdf"
-    if not converter_docx_para_pdf(docx_out, "gerados") or not os.path.exists(pdf_out):
+    pdf_e1 = "gerados/anexo_e1_editado.pdf"
+    if not converter_docx_para_pdf(docx_out, "gerados") or not os.path.exists(pdf_e1):
         return "Erro ao converter Anexo E.1 com LibreOffice", 500
 
+    # === GERA ANEXO F (.xlsx) ===
+    anexo_f_saida = "gerados/anexo_f_preenchido.xlsx"
+    preencher_anexo_f(
+        modelo_path='modelos/anexo_f_modelo.xlsx',
+        saida_path=anexo_f_saida,
+        nome=nome,
+        cpf=cpf,
+        telefone=telefone,
+        email=email,
+        endereco=f"{endereco}, {numero}",
+        cidade=cidade,
+        latitude=latitude,
+        longitude=longitude,
+        data_operacao=data_operacao,
+        qnt_mod=str(qtd_modulos),
+        fab_mod=mod_fabricante,
+        qnt_inv=str(qtd_inversores),
+        fab_inv=inv_fabricante,
+        mod_inv=inv_modelo,
+        pot_mod=str(pot_modulo),
+        pot_inv=str(pot_inversor),
+        pot_total=str(potencia_utilizada),
+        padrao=padrao,
+        forma_conexao=forma_conexao
+    )
+    pdf_anexo_f = "gerados/anexo_f_preenchido.pdf"
+    if not converter_docx_para_pdf(anexo_f_saida, "gerados") or not os.path.exists(pdf_anexo_f):
+        return "Erro ao converter Anexo F com LibreOffice", 500
+
+    # === ZIP FINAL ===
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w') as zipf:
         zipf.write(proc_path, arcname="procuracao.pdf")
-        zipf.write(pdf_out, arcname="anexo_e1.pdf")
-
+        zipf.write(pdf_e1, arcname="anexo_e1.pdf")
+        zipf.write(pdf_anexo_f, arcname="anexo_f.pdf")
+        zipf.write(anexo_f_saida, arcname="anexo_f.xlsx")
     zip_buffer.seek(0)
+
     nome_cliente = nome.lower().strip().replace(" ", "_")
     return send_file(zip_buffer, as_attachment=True,
         download_name=f"{nome_cliente}_cpfl.zip", mimetype="application/zip")

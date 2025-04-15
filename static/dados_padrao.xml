@@ -1,32 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <dados>
     <modulos>
-        <modulo>
-            <fabricante>Canadian Solar</fabricante>
-            <modelo>CS6U-335P</modelo>
-            <potencia>335</potencia>
-        </modulo>
-        <modulo>
-            <fabricante>Jinko</fabricante>
-            <modelo>JKM390M</modelo>
-            <potencia>390</potencia>
-        </modulo>
-    <modulo><fabricante>ASTRONERGY</fabricante><modelo>CHSM72N(DG)/F-HC 600W</modelo><potencia>600</potencia></modulo></modulos>
+    <modulo><fabricante>ASTRONERGY</fabricante><modelo>CHSM72N(DG)/F-HC 600W</modelo><potencia>600.0</potencia></modulo><modulo><fabricante>DAH SOLAR</fabricante><modelo>DHM-72X10/BF/FS 555</modelo><potencia>555.0</potencia></modulo><modulo><fabricante>Belenus</fabricante><modelo>Belenus 1</modelo><potencia>700.0</potencia></modulo></modulos>
     <inversores>
-        <inversor>
-            <fabricante>Fronius</fabricante>
-            <modelo>Symo 8.2</modelo>
-            <potencia>8200</potencia>
-        </inversor>
-        <inversor>
-            <fabricante>Growatt</fabricante>
-            <modelo>MIN 6000TL-X</modelo>
-            <potencia>6000</potencia>
-        </inversor>
-        <inversor>
-            <fabricante>DEYE</fabricante>
-            <modelo>SUN2000-G3-US-220</modelo>
-            <potencia>2000</potencia>
-        </inversor>
-    </inversores>
+    <inversor><fabricante>DEYE</fabricante><modelo>SUN2000-G3-US-220</modelo><potencia>2000.0</potencia></inversor><inversor><fabricante>Miivat</fabricante><modelo>astronoseucu</modelo><potencia>4.0</potencia></inversor></inversores>
 </dados>
