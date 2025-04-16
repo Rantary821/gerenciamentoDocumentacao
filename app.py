@@ -182,6 +182,7 @@ def gerar_tudo_zip():
         pot_inv=str(pot_inversor),
         pot_total=str(potencia_utilizada),
         padrao=padrao,
+        uc=str(codigo_uc),
         forma_conexao=forma_conexao
     )
     pdf_anexo_f = "gerados/anexo_f_preenchido.pdf"
@@ -193,7 +194,7 @@ def gerar_tudo_zip():
     with zipfile.ZipFile(zip_buffer, 'w') as zipf:
         zipf.write(proc_path, arcname="procuracao.pdf")
         zipf.write(pdf_e1, arcname="anexo_e1.pdf")
-        zipf.write(pdf_anexo_f, arcname="anexo_f.pdf")
+       #zipf.write(pdf_anexo_f, arcname="anexo_f.pdf")
         zipf.write(anexo_f_saida, arcname="anexo_f.xlsx")
     zip_buffer.seek(0)
 
