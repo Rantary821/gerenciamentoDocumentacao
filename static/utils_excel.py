@@ -26,6 +26,7 @@ def preencher_anexo_f(
     data_operacao: str,
     qnt_mod: str,
     fab_mod: str,
+    mod_mod:str,
     qnt_inv: str,
     fab_inv: str,
     mod_inv: str,
@@ -33,8 +34,20 @@ def preencher_anexo_f(
     pot_inv: str,
     pot_total: str,
     padrao: str,
-    forma_conexao: str
+    forma_conexao: str,
+    uc:str,
+    cep: str,
 ):
+    # calculo pot kwp módulo
+    pot_mod_watts = float(pot_mod)
+    qnt_mod_int = int(qnt_mod)
+    # Multiplica e converte para kWp
+    pot_total_kwp = round((pot_mod_watts * qnt_mod_int) / 1000, 2)
+    # calculo pot Kw inv
+    pot_inv_kw = float (pot_inv)
+    qnt_inv_int = int (qnt_inv)
+    pot_inv = round((pot_inv_kw * qnt_inv_int) / 1000)
+
     area_mod = str(round(float(qnt_mod) * 2.5, 2))
     padrao_info = PADROES_CPFL.get(padrao, {})
     disjuntor = padrao_info.get("disjuntor", "")
@@ -51,21 +64,23 @@ def preencher_anexo_f(
             if isinstance(cell.value, str):
                 cell.value = (cell.value
                     .replace("#NOME", nome)
+                    .replace("#UC", uc)
                     .replace("#CPF", cpf)
-                    .replace("#TELEFONE", telefone)
-                    .replace("#EMAIL", email)
+                    .replace("#TEL", telefone)
+                    .replace("#CEL", email)
                     .replace("#ENDERECO", endereco)
                     .replace("#CIDADE", cidade)
-                    .replace("#LATITUDE", latitude)
-                    .replace("#LONGITUDE", longitude)
+                    .replace("#LAT", latitude)
+                    .replace("#LONG", longitude)
                     .replace("#QNTMOD", qnt_mod)
+                    .replace("#MODMOD", str(mod_mod))
                     .replace("#FABMOD", fab_mod)
                     .replace("#AREAMOD", area_mod)
                     .replace("#QNTINV", qnt_inv)
                     .replace("#FABINV", fab_inv)
                     .replace("#MODINV", mod_inv)
-                    .replace("#POTMOD", pot_mod)
-                    .replace("#POTINV", pot_inv)
+                    .replace("#POTMOD", str(pot_total_kwp))
+                    .replace("#POTINV", str(pot_inv))
                     .replace("#DATA", data_operacao)
                     .replace("#KW", pot_total)
                     .replace("#PADRAO", padrao)
@@ -75,6 +90,7 @@ def preencher_anexo_f(
                     .replace("#TIPO", forma_conexao)         # aérea/subterrânea
                     .replace("#CABO", bitola)                # bitola correta
                     .replace("#DJ", disjuntor)               # disjuntor
+                    .replace("#CEP", str(cep))
                 )
 
     os.makedirs(os.path.dirname(saida_path), exist_ok=True)

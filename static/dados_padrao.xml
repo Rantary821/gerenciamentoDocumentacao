@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <dados>
     <modulos>
-    <modulo><fabricante>ASTRONERGY</fabricante><modelo>CHSM72N(DG)/F-HC 600W</modelo><potencia>600.0</potencia></modulo><modulo><fabricante>DAH SOLAR</fabricante><modelo>DHM-72X10/BF/FS 555</modelo><potencia>555.0</potencia></modulo><modulo><fabricante>Belenus</fabricante><modelo>Belenus 1</modelo><potencia>700.0</potencia></modulo></modulos>
+    <modulo><fabricante>ASTRONERGY</fabricante><modelo>CHSM72N(DG)/F-HC 600W</modelo><potencia>600.0</potencia></modulo><modulo><fabricante>DAH SOLAR</fabricante><modelo>DHM-72X10/BF/FS 555</modelo><potencia>555.0</potencia></modulo><modulo><fabricante>Belenus</fabricante><modelo>Belenus 1</modelo><potencia>700.0</potencia></modulo><modulo><fabricante>HELIUS</fabricante><modelo>HMF132T12R 600W</modelo><potencia>600.0</potencia></modulo></modulos>
     <inversores>
-    <inversor><fabricante>DEYE</fabricante><modelo>SUN2000-G3-US-220</modelo><potencia>2000.0</potencia></inversor><inversor><fabricante>Miivat</fabricante><modelo>astronoseucu</modelo><potencia>4.0</potencia></inversor></inversores>
+    <inversor><fabricante>DEYE</fabricante><modelo>SUN2000-G3-US-220</modelo><potencia>2000.0</potencia></inversor><inversor><fabricante>Miivat</fabricante><modelo>astronoseucu</modelo><potencia>4.0</potencia></inversor><inversor><fabricante>DEYE</fabricante><modelo>SUN-M220/225G4-EU-Q0 2.25KW</modelo><potencia>2250.0</potencia></inversor></inversores>
 </dados>

@@ -1,0 +1,26 @@
+<!-- templates/painel_conteudo.html -->
+<h1>Projetos Gerados</h1>
+<div class="folders" id="conteudo-painel">
+    {% for estado, cidades in projetos.items() %}
+        <div class="estado">
+            <h2>{{ estado }}</h2>
+            {% for cidade, clientes in cidades.items() %}
+                <div class="cidade">
+                    <h3>{{ cidade }}</h3>
+                    {% for cliente in clientes %}
+                        <div class="projeto">
+                            <strong>{{ cliente.nome }}</strong>
+                            <ul>
+                                {% for arq in cliente.arquivos %}
+                                    <li>
+                                        <a href="{{ url_for('static', filename='../' + arq.caminho) }}" target="_blank">{{ arq.nome }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>

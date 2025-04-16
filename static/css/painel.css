@@ -1,0 +1,148 @@
+/* static/css/painel.css */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #1e1e2f;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.sidebar .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #ddd;
+    transition: color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #fff;
+}
+
+.sidebar .footer {
+    margin-top: auto;
+    font-size: 0.85em;
+    color: #aaa;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.main-content h1 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #333;
+    animation: slideDown 0.6s ease forwards;
+}
+
+.estado, .cidade {
+    margin-bottom: 20px;
+    padding-left: 10px;
+    animation: fadeInUp 0.5s ease;
+}
+
+.estado h2, .cidade h3 {
+    margin: 10px 0;
+    color: #444;
+}
+
+.projeto {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    animation: fadeInUp 0.5s ease;
+}
+
+.projeto:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.projeto ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.projeto ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.projeto ul li a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* static/js/painel.js */
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Painel carregado com sucesso!");
+
+    // Anima projetos conforme scroll
+    const projetos = document.querySelectorAll('.projeto');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animar');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    projetos.forEach(proj => observer.observe(proj));
+});
