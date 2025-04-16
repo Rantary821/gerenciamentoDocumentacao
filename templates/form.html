@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Formulário</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 <h2>Formulário Cliente</h2>
@@ -44,15 +44,18 @@
 
     <fieldset>
         <legend>Endereço da Instalação</legend>
-        <label>CEP:<input type="text" id="cep" name="cep" onblur="buscarEndereco()" required></label>
-        <input type="text" name="numero" onblur="atualizarLocalizacaoComNumero()" required>
+        <label>CEP:
+            <input type="text" id="cep" name="cep" required>
+            <button type="button" onclick="buscarEndereco()">Buscar</button>
+          </label>
+        <label>Numero:<input type="text" name="numero" id="numero" required></label>
         <label>Endereço:<input type="text" id="endereco" name="endereco" required></label>
         <label>Cidade:<input type="text" id="cidade" name="cidade" readonly required></label>
     </fieldset>
 
     <fieldset>
         <legend>Coordenadas e Localização</legend>
-        <div id="mapa" style="height: 300px; margin-bottom: 10px;"></div>
+        <div id="mapa" ></div>
         <label>Latitude:
             <input type="text" name="latitude" id="latitude" onblur="moverMarcadorManual()">
         </label>
@@ -101,9 +104,11 @@
     <button type="submit">Gerar Documentos CPFL (ZIP)</button>
 </form>
 </body>
+
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="{{ url_for('static', filename='js/viacep.js') }}"></script>
-<script src="{{ url_for('static', filename='js/validarCpfCnpj.js') }}"></script>
-<script src="{{ url_for('static', filename='js/mascararCpfCnpj.js') }}"></script>
-<script src="{{ url_for('static', filename='js/mapa_localizacao.js') }}"></script>
+<script src="/static/js/viacep.js" defer></script>
+<script src="/static/js/validarCpfCnpj.js" defer></script>
+<script src="/static/js/mascararCpfCnpj.js" defer></script>
+<script src="{{ url_for('static', filename='js/mapa_localizacao.js') }}" defer></script>
+</html>

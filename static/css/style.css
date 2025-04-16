@@ -62,3 +62,14 @@ form {
   button[type="submit"]:hover {
     background-color: #0056b3;
   }
+  #mapa {
+    height: 300px;
+    width: 100%;
+    max-width: 100%;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
